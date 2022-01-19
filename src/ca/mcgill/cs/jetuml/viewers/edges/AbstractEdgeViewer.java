@@ -100,6 +100,7 @@ public abstract class AbstractEdgeViewer implements EdgeViewer
 		return new Rectangle((int)bounds.getMinX(), (int)bounds.getMinY(), (int)bounds.getWidth(), (int)bounds.getHeight());
 	}
 	
+	
 	/*
 	 * The default behavior implemented by this method
 	 * is to find the connection point that each start/end

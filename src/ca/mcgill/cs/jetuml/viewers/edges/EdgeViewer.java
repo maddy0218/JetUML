@@ -83,4 +83,5 @@ public interface EdgeViewer
      * 
      */
    	Line getConnectionPoints(Edge pEdge);
+   	
 }

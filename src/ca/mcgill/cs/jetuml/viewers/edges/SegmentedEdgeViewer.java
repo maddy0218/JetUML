@@ -292,6 +292,8 @@ public class SegmentedEdgeViewer extends AbstractEdgeViewer
 		return bounds;
 	}
 	
+	
+	
 	private boolean isStepUp(Edge pEdge) 
 	{
 		Point point1 = EdgeViewerRegistry.getConnectionPoints(pEdge).getPoint1();
