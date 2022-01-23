@@ -327,7 +327,7 @@ public class SegmentedEdgeViewer extends AbstractEdgeViewer
 		assert pEdge!=null;
 		Point2D[] points2D = getPoints(pEdge);
 		Point[] points = new Point[points2D.length];
-		for (int i=0; i<points2D.length; i++)
+		for (int i = 0; i<points2D.length; i++)
 		{
 			points[i] = Conversions.toPoint(points2D[i]);
 		}

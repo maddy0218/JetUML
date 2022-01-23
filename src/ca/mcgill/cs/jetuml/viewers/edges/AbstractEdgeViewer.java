@@ -23,7 +23,6 @@ package ca.mcgill.cs.jetuml.viewers.edges;
 import ca.mcgill.cs.jetuml.diagram.Edge;
 import ca.mcgill.cs.jetuml.geom.Dimension;
 import ca.mcgill.cs.jetuml.geom.Direction;
-import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Line;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
