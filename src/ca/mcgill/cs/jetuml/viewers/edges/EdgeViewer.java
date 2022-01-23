@@ -21,6 +21,7 @@
 package ca.mcgill.cs.jetuml.viewers.edges;
 
 import ca.mcgill.cs.jetuml.diagram.Edge;
+import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Line;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
@@ -84,4 +85,17 @@ public interface EdgeViewer
      */
    	Line getConnectionPoints(Edge pEdge);
    	
+   	/**
+   	 * Gets the EdgePath associated with this edge.
+   	 * By default, the EdgePath includes just the start and end points.
+   	 * This behavior will involve more than 2 points for segmented edges. 
+   	 * @param pEdge the edge of interest
+   	 * @return EdgePath for pEdge
+   	 * @pre pEdge != null
+   	 */
+   	default EdgePath getEdgePath(Edge pEdge)
+   	{
+   		assert pEdge!=null;
+   		return new EdgePath(getConnectionPoints(pEdge));
+   	}
 }

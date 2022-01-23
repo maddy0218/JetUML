@@ -25,6 +25,7 @@ import java.util.function.Function;
 import ca.mcgill.cs.jetuml.diagram.Edge;
 import ca.mcgill.cs.jetuml.geom.Conversions;
 import ca.mcgill.cs.jetuml.geom.Dimension;
+import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Line;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
@@ -314,5 +315,22 @@ public class SegmentedEdgeViewer extends AbstractEdgeViewer
 		aArrowStartExtractor.apply(pEdge).view().draw(canvas.getGraphicsContext2D(), 
 				new Point(BUTTON_SIZE-OFFSET, BUTTON_SIZE - OFFSET), new Point(OFFSET, OFFSET));
 		return canvas;
+	}
+	
+	
+	/**
+	 * Gets an EdgePath for a segmented edge.
+	 */
+	@Override
+	public EdgePath getEdgePath(Edge pEdge)
+	{
+		assert pEdge!=null;
+		Point2D[] points2D = getPoints(pEdge);
+		Point[] points = new Point[points2D.length];
+		for (int i=0; i<points2D.length; i++)
+		{
+			points[i] = Conversions.toPoint(points2D[i]);
+		}
+		return new EdgePath(points);
 	}
 }
