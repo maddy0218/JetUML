@@ -54,7 +54,7 @@ public class TestRectangle
 	}
 	
 	@Test
-	public void tesEquals()
+	public void testEquals()
 	{
 		assertTrue(RECTANGLE_1.equals(RECTANGLE_1));
 		assertFalse(RECTANGLE_1.equals(null));
