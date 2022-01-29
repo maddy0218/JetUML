@@ -1,6 +1,7 @@
 package ca.mcgill.cs.jetuml.viewers.edges;
 
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import ca.mcgill.cs.jetuml.diagram.Edge;
@@ -9,7 +10,7 @@ import ca.mcgill.cs.jetuml.geom.EdgePath;
 /**
  * Stores the bounds of edges as a list of rectangles which bound the edges.
  */
-public class EdgeStorage 
+public class EdgeStorage
 {
 	private Map<Edge, EdgePath> aEdgePaths = new IdentityHashMap<>();
  	
@@ -67,5 +68,7 @@ public class EdgeStorage
  		assert pEdge!=null;
  		return aEdgePaths.containsKey(pEdge);
  	}
+
+
  	
 }

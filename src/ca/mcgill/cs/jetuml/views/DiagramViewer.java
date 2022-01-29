@@ -48,7 +48,7 @@ public class DiagramViewer
 	 * @param pDiagram the diagram to draw.
 	 * @pre pDiagram != null && pGraphics != null.
 	 */
-	public final void draw(Diagram pDiagram, GraphicsContext pGraphics)
+	public void draw(Diagram pDiagram, GraphicsContext pGraphics)
 	{
 		assert pDiagram != null && pGraphics != null;
 		NodeViewerRegistry.activateNodeStorages();
@@ -57,7 +57,7 @@ public class DiagramViewer
 		NodeViewerRegistry.deactivateAndClearNodeStorages();
 	}
 	
-	private void drawNode(Node pNode, GraphicsContext pGraphics)
+	protected void drawNode(Node pNode, GraphicsContext pGraphics)
 	{
 		NodeViewerRegistry.draw(pNode, pGraphics);
 		pNode.getChildren().forEach(node -> drawNode(node, pGraphics));
