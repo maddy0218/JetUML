@@ -57,26 +57,25 @@ public class EdgePath
 	}
 
 	@Override
-	public int hashCode() 
-	{
+	public int hashCode() {
 		return Objects.hash(aPoints);
 	}
 
 	@Override
-	public boolean equals(Object pObj) {
-		if (this ==  pObj)
+	public boolean equals(Object obj) {
+		if (this == obj)
 		{
 			return true;
 		}
-		if ( pObj == null)
+		if (obj == null)
 		{
 			return false;
 		}
-		if (getClass() !=  pObj.getClass())
+		if (getClass() != obj.getClass())
 		{
 			return false;
 		}
-		EdgePath other = (EdgePath)  pObj;
+		EdgePath other = (EdgePath) obj;
 		return Objects.equals(aPoints, other.aPoints);
 	}
 	
