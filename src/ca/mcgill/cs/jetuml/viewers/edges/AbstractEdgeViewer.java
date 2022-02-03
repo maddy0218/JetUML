@@ -23,6 +23,7 @@ package ca.mcgill.cs.jetuml.viewers.edges;
 import ca.mcgill.cs.jetuml.diagram.Edge;
 import ca.mcgill.cs.jetuml.geom.Dimension;
 import ca.mcgill.cs.jetuml.geom.Direction;
+import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Line;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
@@ -47,7 +48,7 @@ public abstract class AbstractEdgeViewer implements EdgeViewer
 	protected static final int OFFSET = 3;
 	protected static final int MAX_LENGTH_FOR_NORMAL_FONT = 15;
 	private static final StringViewer SIZE_TESTER = StringViewer.get(Alignment.TOP_LEFT);
-	
+	private EdgeStorage aEdgeStorage = new EdgeStorage();
 	private static final int DEGREES_180 = 180;
 	
 	/**
@@ -67,6 +68,13 @@ public abstract class AbstractEdgeViewer implements EdgeViewer
 		path.getElements().addAll(new MoveTo(endPoints.getX1(), endPoints.getY1()), 
 				new LineTo(endPoints.getX2(), endPoints.getY2()));
 		return path;
+	}
+	
+	@Override
+	public void store(Edge pEdge, EdgePath pEdgePath)
+	{
+		assert pEdge!=null && pEdgePath!=null;
+		aEdgeStorage.store(pEdge, pEdgePath);
 	}
 	
 	/**

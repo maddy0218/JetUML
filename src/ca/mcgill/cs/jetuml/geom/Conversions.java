@@ -55,6 +55,24 @@ public final class Conversions
 	}
 	
 	/**
+	 * Converts an EdgePath into an array of Point2D.
+	 * @param pEdgePath the EdgePath to convert
+	 * @return a Point2D[] where each Point2D has the same coordinates as its corresponding point
+	 * @pre pEdgePath != null;
+	 */
+	public static Point2D[] toPoint2DArray(EdgePath pEdgePath)
+	{
+		Point2D[] result = new Point2D[pEdgePath.size()];
+		int index = 0;
+		for (Point point : pEdgePath)
+		{
+			result[index] = toPoint2D(point);
+			index++;
+		}
+		return result;
+	}
+
+	/**
 	 * @param pBounds An input bounds object.
 	 * @return A rectangle that corresponds to pBounds.
 	 * @pre pBounds != null;

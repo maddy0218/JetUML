@@ -64,7 +64,7 @@ public class SegmentedEdgeViewer extends AbstractEdgeViewer
 	 * @param pStyle The segmentation style.
 	 * @param pLineStyle The line style.
 	 * @param pStart The arrowhead at the start.
-	 * @param pEnd The arrowhead at the start.
+	 * @param pEnd The arrowhead at the end.
 	 * @param pStartLabelExtractor Extracts the start label from the edge
 	 * @param pMiddleLabelExtractor Extracts the middle label from the edge
 	 * @param pEndLabelExtractor Extracts the end label from the edge
@@ -142,6 +142,7 @@ public class SegmentedEdgeViewer extends AbstractEdgeViewer
 		drawString(pGraphics, points[points.length - 2], points[points.length - 1], 
 				aArrowEndExtractor.apply(pEdge), aEndLabelExtractor.apply(pEdge), false, isStepUp(pEdge));
 	}
+	
 	
 	/**
 	 * Computes the attachment point for drawing a string.

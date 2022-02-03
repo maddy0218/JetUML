@@ -98,4 +98,12 @@ public interface EdgeViewer
    		assert pEdge!=null;
    		return new EdgePath(getConnectionPoints(pEdge));
    	}
+   	
+   	/**
+   	 * Adds the Edge and its path to storage
+   	 * @param pEdge the edge of interest
+   	 * @param pEdgePath the path for pEdge
+   	 * @pre pEdge!=null && pEdgePAth!=null
+   	 */
+	void store(Edge pEdge, EdgePath pEdgePath);
 }

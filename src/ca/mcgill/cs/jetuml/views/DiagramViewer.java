@@ -25,11 +25,14 @@ import java.util.Optional;
 
 import ca.mcgill.cs.jetuml.diagram.Diagram;
 import ca.mcgill.cs.jetuml.diagram.DiagramElement;
+import ca.mcgill.cs.jetuml.diagram.DiagramType;
 import ca.mcgill.cs.jetuml.diagram.Edge;
 import ca.mcgill.cs.jetuml.diagram.Node;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
+import ca.mcgill.cs.jetuml.viewers.edges.EdgeStorage;
 import ca.mcgill.cs.jetuml.viewers.edges.EdgeViewerRegistry;
+import ca.mcgill.cs.jetuml.viewers.edges.InheritanceEdgeViewer;
 import ca.mcgill.cs.jetuml.viewers.nodes.NodeViewerRegistry;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -40,6 +43,9 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class DiagramViewer
 {
+	
+	private final EdgeStorage aEdgeStorage = new EdgeStorage();
+	private final InheritanceEdgeViewer aInheritanceEdgeViewer = new InheritanceEdgeViewer();
 	/**
 	 * Draws pDiagram onto pGraphics.
 	 * 
@@ -51,10 +57,40 @@ public class DiagramViewer
 	public void draw(Diagram pDiagram, GraphicsContext pGraphics)
 	{
 		assert pDiagram != null && pGraphics != null;
-		NodeViewerRegistry.activateNodeStorages();
-		pDiagram.rootNodes().forEach(node -> drawNode(node, pGraphics));
-		pDiagram.edges().forEach(edge -> EdgeViewerRegistry.draw(edge, pGraphics));
-		NodeViewerRegistry.deactivateAndClearNodeStorages();
+		if (pDiagram.getType()==DiagramType.CLASS)
+		{
+			//draw and store nodes 
+			NodeViewerRegistry.activateNodeStorages();
+			pDiagram.rootNodes().forEach(node -> drawNode(node, pGraphics));
+			
+			//plan edge paths
+			Layouter layouter = new Layouter();
+			layouter.layout(pDiagram, pGraphics, aEdgeStorage);
+			
+			//draw edges using plan from EdgeStorage
+			for (Edge edge : pDiagram.edges())
+			{
+				if (EdgePriority.priorityOf(edge) == EdgePriority.INHERITANCE)
+				{
+					aInheritanceEdgeViewer.drawFromStorage(edge, pGraphics, aEdgeStorage);
+				}
+				else
+				{
+					EdgeViewerRegistry.draw(edge, pGraphics);
+				}
+			}
+			
+			NodeViewerRegistry.deactivateAndClearNodeStorages();
+		}
+		//for other draw methods, use the normal edge and node drawing steps
+		else 
+		{
+			NodeViewerRegistry.activateNodeStorages();
+			pDiagram.rootNodes().forEach(node -> drawNode(node, pGraphics));
+			pDiagram.edges().forEach(edge -> EdgeViewerRegistry.draw(edge, pGraphics));
+			NodeViewerRegistry.deactivateAndClearNodeStorages();
+		}
+		
 	}
 	
 	protected void drawNode(Node pNode, GraphicsContext pGraphics)

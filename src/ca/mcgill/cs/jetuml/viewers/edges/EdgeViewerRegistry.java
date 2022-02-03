@@ -37,6 +37,7 @@ import ca.mcgill.cs.jetuml.diagram.edges.StateTransitionEdge;
 import ca.mcgill.cs.jetuml.diagram.edges.UseCaseAssociationEdge;
 import ca.mcgill.cs.jetuml.diagram.edges.UseCaseDependencyEdge;
 import ca.mcgill.cs.jetuml.diagram.edges.UseCaseGeneralizationEdge;
+import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Line;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
@@ -77,7 +78,7 @@ public final class EdgeViewerRegistry
 	 * @return A viewer for pEdge
 	 * @pre pEdge != null;
 	 */
-	private EdgeViewer viewerFor(Edge pEdge)
+	public EdgeViewer viewerFor(Edge pEdge)
 	{
 		assert pEdge != null && aRegistry.containsKey(pEdge.getClass());
 		return aRegistry.get(pEdge.getClass());
@@ -126,6 +127,27 @@ public final class EdgeViewerRegistry
    	{
    		INSTANCE.viewerFor(pEdge).drawSelectionHandles(pEdge, pGraphics);
    	}
+   	
+   	/**
+   	 * Stores the edge's edge path
+   	 * @param pEdge the edge of interest
+   	 * @param pEdgePath the EdgePath for pEgde
+   	 */
+   	public static void store(Edge pEdge, EdgePath pEdgePath)
+   	{
+   		INSTANCE.viewerFor(pEdge).store(pEdge, pEdgePath);
+   	}
+   	
+   	/**
+   	 * Returns the edge's path from storage
+   	 * @param pEdge
+   	 * @return
+   	 */
+   	public static EdgePath getEdgePath(Edge pEdge)
+   	{
+   		return INSTANCE.viewerFor(pEdge).getEdgePath(pEdge);
+   	}
+   	
    	
 	/**
      * Gets the smallest rectangle that bounds pEdge.

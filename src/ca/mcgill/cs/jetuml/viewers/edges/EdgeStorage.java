@@ -42,18 +42,13 @@ public class EdgeStorage
  	 * @param pEdge the edge of interest
  	 * @return the EdgePath for pEdge from storage 
  	 * @pre pEdge!=null
+ 	 * @pre this.contains(pEdge)
  	 */
- 	public Optional<EdgePath> getEdgePath(Edge pEdge)
+ 	public EdgePath getEdgePath(Edge pEdge)
  	{
  		assert pEdge!=null;
- 		if (aEdgePaths.containsKey(pEdge)) 
- 		{
- 			return Optional.of(aEdgePaths.get(pEdge));
- 		}
- 		else
- 		{
- 			return Optional.empty();
- 		}
+ 		assert this.contains(pEdge);
+ 		return aEdgePaths.get(pEdge);
  		
  	}
  	

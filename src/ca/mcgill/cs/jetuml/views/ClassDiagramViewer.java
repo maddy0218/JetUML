@@ -2,10 +2,17 @@ package ca.mcgill.cs.jetuml.views;
 
 import ca.mcgill.cs.jetuml.diagram.Diagram;
 import ca.mcgill.cs.jetuml.diagram.Edge;
+import ca.mcgill.cs.jetuml.geom.Conversions;
+import ca.mcgill.cs.jetuml.geom.Rectangle;
 import ca.mcgill.cs.jetuml.viewers.edges.EdgeStorage;
 import ca.mcgill.cs.jetuml.viewers.edges.EdgeViewerRegistry;
+import ca.mcgill.cs.jetuml.viewers.edges.InheritanceEdgeViewer;
 import ca.mcgill.cs.jetuml.viewers.nodes.NodeViewerRegistry;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 
 /**
  * A specialized viewer for Class diagrams which will apply use Layouter 
@@ -14,7 +21,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class ClassDiagramViewer extends DiagramViewer
 {
 	private final EdgeStorage aEdgeStorage = new EdgeStorage();
-	
+	private final InheritanceEdgeViewer aInheritanceEdgeViewer = new InheritanceEdgeViewer();
 	/**
 	 * To-do: draws pDiagram onto pGraphics based on planned edge layout.
 	 */
@@ -28,21 +35,25 @@ public class ClassDiagramViewer extends DiagramViewer
 		
 		//plan edge paths
 		Layouter layouter = new Layouter();
-		layouter.layout(pDiagram, aEdgeStorage, pGraphics);
+		layouter.layout(pDiagram, pGraphics, aEdgeStorage);
 		
 		//draw edges using plan from EdgeStorage
-		pDiagram.edges().forEach(edge -> drawFromStorage(edge, pGraphics));
+		for (Edge edge : pDiagram.edges())
+		{
+			if (EdgePriority.getEdgePriority(edge) == EdgePriority.INHERITANCE)
+			{
+				aInheritanceEdgeViewer.drawFromStorage(edge, pGraphics, aEdgeStorage);
+			}
+			else
+			{
+				EdgeViewerRegistry.draw(edge, pGraphics);
+			}
+		}
 		
-		//pDiagram.edges().forEach(edge -> EdgeViewerRegistry.draw(edge, pGraphics));
 		NodeViewerRegistry.deactivateAndClearNodeStorages();
 
 	}
-	
-	/*
-	 * 
-	 */
-	private void drawFromStorage(Edge pEdge, GraphicsContext pGraphics) {
-		
-	}
-	
 }
+	
+	
+	

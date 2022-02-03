@@ -1,6 +1,7 @@
 package ca.mcgill.cs.jetuml.geom;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ import java.util.Objects;
  * Represents the path of an edge on a diagram as a series of points. 
  * Non-segmented paths consist of 2 points (the start and end points).
  */
-public class EdgePath
+public class EdgePath implements Iterable<Point>
 {
 	private List<Point> aPoints;
 	
@@ -77,6 +78,20 @@ public class EdgePath
 		}
 		EdgePath other = (EdgePath) obj;
 		return Objects.equals(aPoints, other.aPoints);
+	}
+	
+	/**
+	 * Returns the number of points in the path.
+	 * @return an integer representing the size of the EdgePath
+	 */
+	public int size()
+	{
+		return aPoints.size();
+	}
+
+	@Override
+	public Iterator<Point> iterator() {
+		return aPoints.iterator();
 	}
 	
 	
