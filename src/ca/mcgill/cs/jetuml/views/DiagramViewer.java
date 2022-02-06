@@ -44,7 +44,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class DiagramViewer
 {
 	
-	private final EdgeStorage aEdgeStorage = new EdgeStorage();
+	
 	private final InheritanceEdgeViewer aInheritanceEdgeViewer = new InheritanceEdgeViewer();
 	/**
 	 * Draws pDiagram onto pGraphics.
@@ -64,15 +64,16 @@ public class DiagramViewer
 			pDiagram.rootNodes().forEach(node -> drawNode(node, pGraphics));
 			
 			//plan edge paths
-			Layouter layouter = new Layouter();
-			layouter.layout(pDiagram, pGraphics, aEdgeStorage);
+			EdgeStorage edgeStorage = new EdgeStorage();
+			Layouter layouter = new Layouter(edgeStorage);
+			layouter.layout(pDiagram, pGraphics);
 			
 			//draw edges using plan from EdgeStorage
 			for (Edge edge : pDiagram.edges())
 			{
 				if (EdgePriority.priorityOf(edge) == EdgePriority.INHERITANCE)
 				{
-					aInheritanceEdgeViewer.drawFromStorage(edge, pGraphics, aEdgeStorage);
+					aInheritanceEdgeViewer.drawFromStorage(edge, pGraphics, edgeStorage);
 				}
 				else
 				{

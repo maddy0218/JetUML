@@ -34,13 +34,13 @@ public class ClassDiagramViewer extends DiagramViewer
 		pDiagram.rootNodes().forEach(node -> drawNode(node, pGraphics));
 		
 		//plan edge paths
-		Layouter layouter = new Layouter();
-		layouter.layout(pDiagram, pGraphics, aEdgeStorage);
+		Layouter layouter = new Layouter(aEdgeStorage);
+		layouter.layout(pDiagram, pGraphics);
 		
-		//draw edges using plan from EdgeStorage
+		//draw inheritance edges using EdgeStorage
 		for (Edge edge : pDiagram.edges())
 		{
-			if (EdgePriority.getEdgePriority(edge) == EdgePriority.INHERITANCE)
+			if (EdgePriority.priorityOf(edge) == EdgePriority.INHERITANCE)
 			{
 				aInheritanceEdgeViewer.drawFromStorage(edge, pGraphics, aEdgeStorage);
 			}
@@ -49,9 +49,7 @@ public class ClassDiagramViewer extends DiagramViewer
 				EdgeViewerRegistry.draw(edge, pGraphics);
 			}
 		}
-		
 		NodeViewerRegistry.deactivateAndClearNodeStorages();
-
 	}
 }
 	

@@ -50,16 +50,10 @@ public class TestEdgeStorage
 	}
 	
 	@Test
-	public void testGetEdgePath_isPresent()
+	public void testGetEdgePath()
 	{
 		aEdgeStorage.store(edge1, path1);
-		assertTrue(aEdgeStorage.getEdgePath(edge1).isPresent());
-		assertEquals(aEdgeStorage.getEdgePath(edge1), Optional.of(path1));
+		assertEquals(aEdgeStorage.getEdgePath(edge1), path1);
 	}
 	
-	@Test
-	public void testGetEdgePath_notPresent()
-	{
-		assertEquals(Optional.empty(), aEdgeStorage.getEdgePath(edge1));
-	}
 }

@@ -1,10 +1,13 @@
 package ca.mcgill.cs.jetuml.viewers.edges;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import ca.mcgill.cs.jetuml.diagram.Edge;
+import ca.mcgill.cs.jetuml.diagram.Node;
 import ca.mcgill.cs.jetuml.geom.EdgePath;
 
 /**
@@ -64,6 +67,25 @@ public class EdgeStorage
  		return aEdgePaths.containsKey(pEdge);
  	}
 
+ 	/**
+	 * @param pNode The node of interest
+	 * @return All the edges connected to pNode
+	 * @pre pNode != null
+	 */
+	public Iterable<Edge> edgesConnectedTo(Node pNode)
+	{
+		assert pNode != null;
+		Collection<Edge> result = new ArrayList<>();
+		for( Edge edge : aEdgePaths.keySet() )
+		{
+			if( edge.getStart() == pNode || edge.getEnd() == pNode )
+			{
+				result.add(edge);
+			}
+		}
+		return result;
+	}
+ 	
 
  	
 }

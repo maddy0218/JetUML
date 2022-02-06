@@ -14,7 +14,7 @@ import ca.mcgill.cs.jetuml.diagram.edges.GeneralizationEdge.Type;
  */
 public enum EdgePriority {
 	INHERITANCE, IMPLEMENTATION, AGGREGATION, COMPOSITION,
-	ASSOCIATION, DEPENDANCY, SELFCALL, OTHER;
+	ASSOCIATION, DEPENDENCY, SELFCALL, OTHER;
 	
 	public static EdgePriority priorityOf(Edge pEdge)
 	{
@@ -50,7 +50,7 @@ public enum EdgePriority {
 		}
 		else if (pEdge instanceof DependencyEdge)
 		{
-			return EdgePriority.DEPENDANCY;
+			return EdgePriority.DEPENDENCY;
 		}
 		else
 		{

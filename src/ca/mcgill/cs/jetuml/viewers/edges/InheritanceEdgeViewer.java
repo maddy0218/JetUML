@@ -39,11 +39,6 @@ public class InheritanceEdgeViewer
 	private Function<Edge, String> aEndLabelExtractor = e -> "";
 	
 	
-	
-	
-	
-	
-	
 	/**
 	 * @return The line style for this edge.
 	 */
@@ -60,15 +55,13 @@ public class InheritanceEdgeViewer
 	}
 	
 
-	
-	
-	
 	/**
 	 * Uses stored information about the layout of pEdge to draw it.
 	 * @param pEdge
 	 * @param pGraphics
 	 */
-	public void drawFromStorage(Edge pEdge, GraphicsContext pGraphics, EdgeStorage pEdgeStorage) {
+	public void drawFromStorage(Edge pEdge, GraphicsContext pGraphics, EdgeStorage pEdgeStorage) 
+	{
 		//get the EdgePath of pEdge and convert it into a Point2D[] array
 		Point2D[] points = Conversions.toPoint2DArray(pEdgeStorage.getEdgePath(pEdge));
 		
