@@ -56,8 +56,7 @@ public class Layouter
 	public void layout(Diagram pDiagram, GraphicsContext pGraphics)
 	{
 		assert pDiagram !=null;
-		layoutInheritanceEdges(pDiagram, pGraphics);
-		
+		layoutInheritanceEdges(pDiagram, pGraphics);		
 	}
 	
 
@@ -67,10 +66,11 @@ public class Layouter
 	 * @param pDiagram the diagram to layout
 	 * @param pEdgeStorage the storage for EdgePaths for pDiagram
 	 * @param pGraphics graphics context
+	 * @pre pDiagram!=null && pGraphics!=null
 	 */
 	private void layoutInheritanceEdges(Diagram pDiagram, GraphicsContext pGraphics)
 	{
-		//get all inheritanceEdges
+		assert pDiagram!=null && pGraphics!=null;
 		List<Edge> inheritanceEdges = pDiagram.edges().stream()
 			.filter(edge -> EdgePriority.priorityOf(edge)==EdgePriority.INHERITANCE)
 			.collect(toList());
@@ -83,7 +83,6 @@ public class Layouter
 			//remove siblings from inheritanceEdges
 			inheritanceEdges.removeAll(edgesToMerge);
 			Point endPoint = getConnectionPoint(currentEdge.getEnd(), currentEdge);
-			
 			if (!edgesToMerge.isEmpty()) 
 			{
 				List<Point> edgeStartPoints = new ArrayList<>();

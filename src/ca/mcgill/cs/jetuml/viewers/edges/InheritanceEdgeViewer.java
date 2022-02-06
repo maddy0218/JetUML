@@ -81,8 +81,7 @@ public class InheritanceEdgeViewer
 				aArrowEndExtractor.apply(pEdge), aEndLabelExtractor.apply(pEdge), false, isStepUp(pEdge));
 	}
 	
-	
-	
+
 	private Path getSegmentPath(Edge pEdge, EdgeStorage pEdgeStorage)
 	{
 		Point2D[] points = Conversions.toPoint2DArray(pEdgeStorage.getEdgePath(pEdge));
@@ -111,12 +110,10 @@ public class InheritanceEdgeViewer
 	private void drawString(GraphicsContext pGraphics, Point2D pEndPoint1, Point2D pEndPoint2, 
 			ArrowHead pArrowHead, String pString, boolean pCenter, boolean pIsStepUp)
 	{
-		//do nothing for now
+		//Need to implement DrawString() to work using EdgeStorage
 	}
 	
-	
-	
-	
+
 }
 
 	
