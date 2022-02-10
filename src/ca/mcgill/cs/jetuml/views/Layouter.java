@@ -1,31 +1,27 @@
 package ca.mcgill.cs.jetuml.views;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static ca.mcgill.cs.jetuml.geom.Direction.fromLine;
 import static ca.mcgill.cs.jetuml.views.EdgePriority.priorityOf;
-import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import ca.mcgill.cs.jetuml.diagram.Diagram;
 import ca.mcgill.cs.jetuml.diagram.Edge;
 import ca.mcgill.cs.jetuml.diagram.Node;
+import ca.mcgill.cs.jetuml.diagram.edges.AggregationEdge;
 import ca.mcgill.cs.jetuml.geom.Direction;
 import ca.mcgill.cs.jetuml.geom.EdgePath;
-import ca.mcgill.cs.jetuml.geom.GeomUtils;
 import ca.mcgill.cs.jetuml.geom.Line;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
 import ca.mcgill.cs.jetuml.viewers.edges.EdgeStorage;
 import ca.mcgill.cs.jetuml.viewers.edges.EdgeViewerRegistry;
-import ca.mcgill.cs.jetuml.viewers.nodes.NodeStorage;
+import ca.mcgill.cs.jetuml.viewers.edges.Index;
+import ca.mcgill.cs.jetuml.viewers.edges.IndexSign;
 import ca.mcgill.cs.jetuml.viewers.nodes.NodeViewerRegistry;
-import javafx.scene.canvas.GraphicsContext;
-import static java.util.stream.Collectors.toList;;
+import javafx.scene.canvas.GraphicsContext;;
 /**
  * Plans the paths for edges based on the position of other edges and nodes 
  * to make the diagram more clean and readable.
@@ -53,10 +49,15 @@ public class Layouter
 	 * @param pGraphics graphics context 
 	 * @pre pDiagram!=null
 	 */
-	public void layout(Diagram pDiagram, GraphicsContext pGraphics)
+	public void layout(Diagram pDiagram)
 	{
 		assert pDiagram !=null;
-		layoutInheritanceEdges(pDiagram, pGraphics);		
+		layoutSegmentedEdges(pDiagram, EdgePriority.INHERITANCE);	
+		layoutSegmentedEdges(pDiagram, EdgePriority.IMPLEMENTATION);
+		layoutSegmentedEdges(pDiagram, EdgePriority.AGGREGATION);
+		layoutSegmentedEdges(pDiagram, EdgePriority.COMPOSITION);
+		layoutSegmentedEdges(pDiagram, EdgePriority.ASSOCIATION);
+		
 	}
 	
 
@@ -65,14 +66,13 @@ public class Layouter
 	 * and simplifying the paths for merged edges.
 	 * @param pDiagram the diagram to layout
 	 * @param pEdgeStorage the storage for EdgePaths for pDiagram
-	 * @param pGraphics graphics context
 	 * @pre pDiagram!=null && pGraphics!=null
 	 */
-	private void layoutInheritanceEdges(Diagram pDiagram, GraphicsContext pGraphics)
+	private void layoutSegmentedEdges(Diagram pDiagram, EdgePriority pGeneralizationEdgePriority)
 	{
-		assert pDiagram!=null && pGraphics!=null;
+		assert pDiagram!=null;
 		List<Edge> inheritanceEdges = pDiagram.edges().stream()
-			.filter(edge -> EdgePriority.priorityOf(edge)==EdgePriority.INHERITANCE)
+			.filter(edge -> EdgePriority.priorityOf(edge)==pGeneralizationEdgePriority)
 			.collect(toList());
 		
 		while (!inheritanceEdges.isEmpty())
@@ -150,7 +150,8 @@ public class Layouter
 	 * @pre pStart!=null && pEnd!=null
 	 * @pre pDirection!=null && pDirection.isCardinal();
 	 */
-	private int getMidPoint(Point pStart, Point pEnd, Direction pDirection) {
+	private int getMidPoint(Point pStart, Point pEnd, Direction pDirection) 
+	{
 		assert pStart!=null && pEnd!=null;
 		assert pDirection!=null && pDirection.isCardinal();
 		if (pDirection == Direction.NORTH)
@@ -218,11 +219,20 @@ public class Layouter
 	private List<Edge> getEdgesToMerge(Edge pEdge, List<Edge> pDiagramEdges)
 	{
 		assert pEdge != null && pDiagramEdges !=null;
-		return pDiagramEdges.stream()
-				.filter(edge -> edge.getEnd()==pEdge.getEnd())
-				.filter(edge -> EdgePriority.priorityOf(edge)== priorityOf(pEdge))
-				.filter( edge -> getAttatchedSide(edge, edge.getEnd()) == getAttatchedSide(pEdge, pEdge.getEnd()))
-				.collect(toList());
+		List<Edge> result = new ArrayList<>();
+		for (Edge edge : pDiagramEdges)
+		{
+			if (edge.getEnd()==pEdge.getEnd() && EdgePriority.priorityOf(edge)== priorityOf(pEdge))
+			{
+				Direction side = getAttatchedSide(pEdge, pEdge.getEnd());
+				if (getAttatchedSide(edge, edge.getEnd()) == side)
+				{
+					result.add(edge);
+				}
+			
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -238,23 +248,34 @@ public class Layouter
 	private Point getConnectionPoint(Node pNode, Edge pEdge)
 	{
 		assert pNode!=null && pEdge!=null;
-		Rectangle nodeBounds = NodeViewerRegistry.getBounds(pNode);	
+		Rectangle nodeBounds = NodeViewerRegistry.getBounds(pNode);
+		Node otherNode = getOtherNode(pEdge, pNode);
 		Direction attatchmentSide = getAttatchedSide(pEdge, pNode); //which face of the node pEdge is incoming onto
 		Line faceOfNode = getNodeFace(nodeBounds, attatchmentSide);
 		//get the other edges which are connected to the same face of pNode
 		List<Edge> edgesOnNodeFace = getEdgesOnNodeFace(pNode, attatchmentSide);
-		//iterate over these edge connection points, making changes when necessary
 		
+		//iterate through all edges in edgesOnNodeFace (process them from highest to lowest priority)
+		edgesOnNodeFace.sort(Comparator.comparing(e -> EdgePriority.priorityOf(e)));
+		Index maxIndex = Index.FOUR;
+		//East and West sides of nodes have fewer connection points; their max index is 2
+		if (attatchmentSide == Direction.EAST || attatchmentSide == Direction.WEST)
+		{
+			maxIndex = Index.TWO; 
+		}
+		//determine the sign for the index, either positive (right/down) or negative (left/up)
+		IndexSign sign = getIndexSign(otherNode, pNode, attatchmentSide);
 		
-		//for now: inheritance edges get index 0 connection point
-		if (attatchmentSide == Direction.NORTH || attatchmentSide == Direction.SOUTH)
+		for (int i = 0; i <= maxIndex.ordinal(); i++) 
 		{
-			return new Point(((faceOfNode.getX2()-faceOfNode.getX1())/2) + faceOfNode.getX1(), faceOfNode.getY1());
+			Index bestIndex = Index.values()[i];
+			Point bestPoint = Index.toPoint(faceOfNode, attatchmentSide, bestIndex, sign);
+			if (aEdgeStorage.connectionPointIsAvailable(bestPoint))
+			{
+				return bestPoint;
+			}
 		}
-		else 
-		{
-			return new Point(faceOfNode.getX1(), ((faceOfNode.getY2()-faceOfNode.getY1())/2) + faceOfNode.getY1());
-		}
+		return Index.toPoint(faceOfNode, attatchmentSide, maxIndex, sign);
 	}
 	
 	/**
@@ -282,6 +303,59 @@ public class Layouter
 			}
 		}
 		return result;		
+	}
+	
+	private Node getOtherNode(Edge pEdge, Node pNode)
+	{
+		if (pEdge.getStart() == pNode)
+		{
+			return pEdge.getEnd();
+		}
+		else
+		{
+			return pEdge.getStart();
+		}
+	}
+	
+	/**
+	 * Uses the relative positions of pStartNode and pEndNode to get the index sign (either positive or negative)
+	 * of the index position where an edge from pStartNode would connect on pEndNode.
+	 * @param pStartNode the start node 
+	 * @param pEndNode the node where an edge from pStart connects
+	 * @param pEdgeDirection the cardinal direction describing the trajectory of an edge from pStartNode to pEndNode
+	 * @return and IndexSign (either POSITIVE or NEGATIVE). Returns IndexSign.NEGATIVE if the connection point is
+	 * West or North of the center point. Returns IndexSign.POSITIVE if the connection point is equal to, SOUTH, or EAST 
+	 * of the center point. 
+	 */
+	private IndexSign getIndexSign(Node pStartNode, Node pEndNode, Direction pEdgeDirection)
+	{
+		Rectangle startBounds = NodeViewerRegistry.getBounds(pStartNode);
+		Rectangle endBounds = NodeViewerRegistry.getBounds(pEndNode);
+		if (pEdgeDirection == Direction.NORTH || pEdgeDirection == Direction.SOUTH)
+		{
+			//then compare x-coordinates
+			if (startBounds.getCenter().getX() < endBounds.getCenter().getX())
+			{
+				return IndexSign.NEGATIVE;
+			}
+			else
+			{
+				return IndexSign.POSITIVE;
+			}
+		}
+		else //Direction is East or West so compare Y-values
+		{
+			//then compare x-coordinates
+			if (startBounds.getCenter().getY() < endBounds.getCenter().getY())
+			{
+				return IndexSign.NEGATIVE;
+			}
+			else
+			{
+				return IndexSign.POSITIVE;
+			}
+		}
+		
 	}
 	
 	/**
@@ -355,22 +429,43 @@ public class Layouter
 		assert pEdge.getStart()==pNode || pEdge.getEnd()==pNode;
 		Rectangle startNodeBounds = NodeViewerRegistry.getBounds(pEdge.getStart());
 		Rectangle endNodeBounds = NodeViewerRegistry.getBounds(pEdge.getEnd());
-		
-		if (endNodeBounds.getMaxY() < startNodeBounds.getY() - MARGIN)
+		if (pEdge instanceof AggregationEdge)//then attach to East/West sides when possible
 		{
-			return isOutgoingEdge(pEdge, pNode)?Direction.NORTH:Direction.SOUTH;
+			if (endNodeBounds.getMaxX() < startNodeBounds.getX() - MARGIN)
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.WEST:Direction.EAST;
+			}
+			else if (startNodeBounds.getMaxX() < endNodeBounds.getX()-MARGIN)
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.EAST:Direction.WEST;
+			}
+			else if (endNodeBounds.getCenter().getY() < startNodeBounds.getCenter().getY())
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.NORTH:Direction.SOUTH;
+			}
+			else
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.SOUTH:Direction.NORTH;
+			}
 		}
-		else if (startNodeBounds.getMaxY() < endNodeBounds.getY()-MARGIN)
-		{
-			return isOutgoingEdge(pEdge, pNode)?Direction.SOUTH:Direction.NORTH;
-		}
-		else if (endNodeBounds.getCenter().getX() < startNodeBounds.getCenter().getX())
-		{
-			return isOutgoingEdge(pEdge, pNode)?Direction.WEST:Direction.EAST;
-		}
-		else
-		{
-			return isOutgoingEdge(pEdge, pNode)?Direction.EAST:Direction.WEST;
+		else 
+		{ //Attach to North/South sides when possible
+			if (endNodeBounds.getMaxY() < startNodeBounds.getY() - MARGIN)
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.NORTH:Direction.SOUTH;
+			}
+			else if (startNodeBounds.getMaxY() < endNodeBounds.getY()-MARGIN)
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.SOUTH:Direction.NORTH;
+			}
+			else if (endNodeBounds.getCenter().getX() < startNodeBounds.getCenter().getX())
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.WEST:Direction.EAST;
+			}
+			else
+			{
+				return isOutgoingEdge(pEdge, pNode)?Direction.EAST:Direction.WEST;
+			}
 		}
 	}
 }

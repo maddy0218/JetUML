@@ -12,6 +12,7 @@ import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
 import ca.mcgill.cs.jetuml.views.ArrowHead;
+import ca.mcgill.cs.jetuml.views.EdgePriority;
 import ca.mcgill.cs.jetuml.views.LineStyle;
 import ca.mcgill.cs.jetuml.views.StringViewer;
 import ca.mcgill.cs.jetuml.views.ToolGraphics;
@@ -26,14 +27,14 @@ import javafx.scene.shape.Path;
 /**
  *Renders the path of an inheritance egde
  */
-public class InheritanceEdgeViewer
+public class StoredEdgeViewer
 {
 	private static final StringViewer TOP_CENTERED_STRING_VIEWER = StringViewer.get(Alignment.TOP_CENTER);
 	private static final StringViewer BOTTOM_CENTERED_STRING_VIEWER = StringViewer.get(Alignment.BOTTOM_CENTER);
 	private static final StringViewer LEFT_JUSTIFIED_STRING_VIEWER = StringViewer.get(Alignment.TOP_LEFT);
-	private Function<Edge, LineStyle> aLineStyleExtractor = e -> getLineStyle((GeneralizationEdge)e);
-	private Function<Edge, ArrowHead> aArrowStartExtractor = e -> ArrowHead.NONE;
-	private Function<Edge, ArrowHead> aArrowEndExtractor = e -> ArrowHead.TRIANGLE;
+	private Function<Edge, LineStyle> aLineStyleExtractor = e -> getLineStyle(e);
+	private Function<Edge, ArrowHead> aArrowStartExtractor = e -> getArrowEnd(e);
+	private Function<Edge, ArrowHead> aArrowEndExtractor = e -> getArrowStart(e);
 	private Function<Edge, String> aStartLabelExtractor = e -> "";
 	private Function<Edge, String> aMiddleLabelExtractor = e -> "";
 	private Function<Edge, String> aEndLabelExtractor = e -> "";
@@ -42,15 +43,47 @@ public class InheritanceEdgeViewer
 	/**
 	 * @return The line style for this edge.
 	 */
-	private static LineStyle getLineStyle(GeneralizationEdge pEdge)
+	private static LineStyle getLineStyle(Edge pEdge)
 	{
-		if( pEdge.getType() == Type.Implementation )
+		if(EdgePriority.priorityOf(pEdge)==EdgePriority.IMPLEMENTATION)
 		{
 			return LineStyle.DOTTED;
 		}
 		else
 		{
 			return LineStyle.SOLID;
+		}
+	}
+	
+	private static ArrowHead getArrowStart(Edge pEdge)
+	{
+		if (EdgePriority.priorityOf(pEdge)==EdgePriority.IMPLEMENTATION ||
+			 EdgePriority.priorityOf(pEdge)==EdgePriority.INHERITANCE )
+		{
+			return ArrowHead.TRIANGLE;
+		}
+		else if (EdgePriority.priorityOf(pEdge)==EdgePriority.DEPENDENCY )
+		{
+			return ArrowHead.V;
+		}
+		else {
+			return ArrowHead.NONE;
+		}
+	}
+	
+	private static ArrowHead getArrowEnd(Edge pEdge)
+	{
+		if (EdgePriority.priorityOf(pEdge)==EdgePriority.AGGREGATION)
+		{
+			return ArrowHead.DIAMOND;
+		}
+		else if (EdgePriority.priorityOf(pEdge)==EdgePriority.COMPOSITION)
+		{
+			return ArrowHead.BLACK_DIAMOND;
+		}
+		else
+		{
+			return ArrowHead.NONE;
 		}
 	}
 	

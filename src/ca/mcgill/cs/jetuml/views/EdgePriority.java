@@ -57,4 +57,19 @@ public enum EdgePriority {
 			return EdgePriority.OTHER;
 		}
 	}
+	
+	/**
+	 * Returns whether pPriority is for that of a segmented edge
+	 * @param pPriority the edgePriority level of interest
+	 * @return true if the pPriority is the priority for a segmented edge
+	 */
+	public static boolean isSegmented(EdgePriority pPriority)
+	{
+		return  pPriority == EdgePriority.INHERITANCE || 
+				pPriority == EdgePriority.IMPLEMENTATION || 
+				pPriority == EdgePriority.AGGREGATION || 
+			    pPriority == EdgePriority.COMPOSITION || 
+			    pPriority == EdgePriority.ASSOCIATION;
+				
+	}
 }

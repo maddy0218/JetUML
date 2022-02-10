@@ -9,6 +9,7 @@ import java.util.Optional;
 import ca.mcgill.cs.jetuml.diagram.Edge;
 import ca.mcgill.cs.jetuml.diagram.Node;
 import ca.mcgill.cs.jetuml.geom.EdgePath;
+import ca.mcgill.cs.jetuml.geom.Point;
 
 /**
  * Stores the bounds of edges as a list of rectangles which bound the edges.
@@ -84,6 +85,18 @@ public class EdgeStorage
 			}
 		}
 		return result;
+	}
+	
+	public boolean connectionPointIsAvailable(Point pConnectionPoint)
+	{
+		for( EdgePath path : aEdgePaths.values() )
+		{
+			if (path.getStartPoint().equals(pConnectionPoint) || path.getEndPoint().equals(pConnectionPoint))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
  	
 

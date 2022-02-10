@@ -32,7 +32,7 @@ import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
 import ca.mcgill.cs.jetuml.viewers.edges.EdgeStorage;
 import ca.mcgill.cs.jetuml.viewers.edges.EdgeViewerRegistry;
-import ca.mcgill.cs.jetuml.viewers.edges.InheritanceEdgeViewer;
+import ca.mcgill.cs.jetuml.viewers.edges.StoredEdgeViewer;
 import ca.mcgill.cs.jetuml.viewers.nodes.NodeViewerRegistry;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -45,7 +45,7 @@ public class DiagramViewer
 {
 	
 	
-	private final InheritanceEdgeViewer aInheritanceEdgeViewer = new InheritanceEdgeViewer();
+	private final StoredEdgeViewer aInheritanceEdgeViewer = new StoredEdgeViewer();
 	/**
 	 * Draws pDiagram onto pGraphics.
 	 * 
@@ -66,12 +66,12 @@ public class DiagramViewer
 			//plan edge paths
 			EdgeStorage edgeStorage = new EdgeStorage();
 			Layouter layouter = new Layouter(edgeStorage);
-			layouter.layout(pDiagram, pGraphics);
+			layouter.layout(pDiagram);
 			
 			//draw edges using plan from EdgeStorage
 			for (Edge edge : pDiagram.edges())
 			{
-				if (EdgePriority.priorityOf(edge) == EdgePriority.INHERITANCE)
+				if (EdgePriority.isSegmented(EdgePriority.priorityOf(edge)))
 				{
 					aInheritanceEdgeViewer.drawFromStorage(edge, pGraphics, edgeStorage);
 				}
