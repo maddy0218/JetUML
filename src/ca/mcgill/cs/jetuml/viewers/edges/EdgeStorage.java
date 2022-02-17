@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Optional;
 import ca.mcgill.cs.jetuml.diagram.Edge;
 import ca.mcgill.cs.jetuml.diagram.Node;
+import ca.mcgill.cs.jetuml.geom.Direction;
 import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Point;
+import ca.mcgill.cs.jetuml.views.EdgePriority;
 
 /**
  * Stores the bounds of edges as a list of rectangles which bound the edges.
@@ -87,8 +89,15 @@ public class EdgeStorage
 		return result;
 	}
 	
+	/**
+	 * Returns whether there is an edge whose start of end point is pConnectionPoint.
+	 * @param pConnectionPoint a Point in the diagram
+	 * @return false if pPoint is a connection point occupied by an edge in storage, true otherwise
+	 * @pre pConnectionPoint !=null;
+	 */
 	public boolean connectionPointIsAvailable(Point pConnectionPoint)
 	{
+		assert pConnectionPoint !=null;
 		for( EdgePath path : aEdgePaths.values() )
 		{
 			if (path.getStartPoint().equals(pConnectionPoint) || path.getEndPoint().equals(pConnectionPoint))

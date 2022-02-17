@@ -16,8 +16,15 @@ public enum EdgePriority {
 	INHERITANCE, IMPLEMENTATION, AGGREGATION, COMPOSITION,
 	ASSOCIATION, DEPENDENCY, SELFCALL, OTHER;
 	
+	/**
+	 * Gets the priority of an edge
+	 * @param pEdge the edde of interest
+	 * @return the EdgePriority associated with pEdge
+	 * @pre pEdge!=null
+	 */
 	public static EdgePriority priorityOf(Edge pEdge)
 	{
+		assert pEdge !=null;
 		if (pEdge.getStart()==pEdge.getEnd())
 		{
 			return EdgePriority.SELFCALL;
@@ -62,9 +69,11 @@ public enum EdgePriority {
 	 * Returns whether pPriority is for that of a segmented edge
 	 * @param pPriority the edgePriority level of interest
 	 * @return true if the pPriority is the priority for a segmented edge
+	 * @pre pPriority!=nill;
 	 */
 	public static boolean isSegmented(EdgePriority pPriority)
 	{
+		assert pPriority !=null;
 		return  pPriority == EdgePriority.INHERITANCE || 
 				pPriority == EdgePriority.IMPLEMENTATION || 
 				pPriority == EdgePriority.AGGREGATION || 

@@ -45,7 +45,7 @@ public class DiagramViewer
 {
 	
 	
-	private final StoredEdgeViewer aInheritanceEdgeViewer = new StoredEdgeViewer();
+	private final StoredEdgeViewer aStoredEdgeViewer = new StoredEdgeViewer();
 	/**
 	 * Draws pDiagram onto pGraphics.
 	 * 
@@ -71,9 +71,9 @@ public class DiagramViewer
 			//draw edges using plan from EdgeStorage
 			for (Edge edge : pDiagram.edges())
 			{
-				if (EdgePriority.isSegmented(EdgePriority.priorityOf(edge)))
+				if (EdgePriority.isSegmented(EdgePriority.priorityOf(edge)) || EdgePriority.priorityOf(edge) ==EdgePriority.DEPENDENCY)
 				{
-					aInheritanceEdgeViewer.drawFromStorage(edge, pGraphics, edgeStorage);
+					aStoredEdgeViewer.drawFromStorage(edge, pGraphics, edgeStorage);
 				}
 				else
 				{

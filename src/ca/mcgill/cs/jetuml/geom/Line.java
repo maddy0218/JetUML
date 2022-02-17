@@ -112,4 +112,16 @@ public class Line
 	{
 		return String.format("[%s, %s]", aPoint1, aPoint2);
 	}
+	
+	/**
+	 * Get the length of the line on the grid.
+	 * @param pLine the line of interest
+	 * @return the length of the line
+	 */
+	public int getLineLength()
+	{
+		int xLength = Math.abs(getX2()-getX1());
+		int yLength = Math.abs(getY2()-getY1());
+		return (int)(((xLength^2) + (yLength^2))^(1/2));
+	}
 }

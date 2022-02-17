@@ -57,13 +57,27 @@ public class EdgePath implements Iterable<Point>
 		return aPoints.get(aPoints.size()-1);
 	}
 
+	/**
+	 * Returns the pIndex point in the edge path.
+	 * @param pIndex the index of aPoints
+	 * @return the Point in aPoints at pIndex < aPoints.size()
+	 * @pre pIndex > 0 && pIndex
+	 */
+	public Point getPointByIndex(int pIndex)
+	{
+		assert pIndex >= 0 && pIndex < aPoints.size();
+		return aPoints.get(pIndex);
+	}
+
 	@Override
-	public int hashCode() {
+	public int hashCode() 
+	{
 		return Objects.hash(aPoints);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj) 
+	{
 		if (this == obj)
 		{
 			return true;
@@ -77,7 +91,18 @@ public class EdgePath implements Iterable<Point>
 			return false;
 		}
 		EdgePath other = (EdgePath) obj;
-		return Objects.equals(aPoints, other.aPoints);
+		if (other.aPoints.size() != this.aPoints.size())
+		{
+			return false;
+		}
+		for (int i=0; i<aPoints.size(); i++)
+		{
+			if (!other.aPoints.get(i).equals(aPoints.get(i)))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**

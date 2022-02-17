@@ -49,7 +49,7 @@ public abstract class AbstractEdgeViewer implements EdgeViewer
 	protected static final int MAX_LENGTH_FOR_NORMAL_FONT = 15;
 	private static final StringViewer SIZE_TESTER = StringViewer.get(Alignment.TOP_LEFT);
 	private EdgeStorage aEdgeStorage = new EdgeStorage();
-	private static final int DEGREES_180 = 180;
+	private final int DEGREES_180 = 180;
 	
 	/**
 	 * The default behavior is to draw a straight line between
