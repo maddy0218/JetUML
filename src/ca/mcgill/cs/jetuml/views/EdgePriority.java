@@ -12,9 +12,10 @@ import ca.mcgill.cs.jetuml.diagram.edges.GeneralizationEdge.Type;
  * planning the layout of edges. 
  * Arranged in decreasing order (INHERITANCE has the highest priority)
  */
-public enum EdgePriority {
+public enum EdgePriority 
+{
 	INHERITANCE, IMPLEMENTATION, AGGREGATION, COMPOSITION,
-	ASSOCIATION, DEPENDENCY, SELFCALL, OTHER;
+	ASSOCIATION, DEPENDENCY, SELF_EDGE, OTHER;
 	
 	/**
 	 * Gets the priority of an edge
@@ -27,7 +28,7 @@ public enum EdgePriority {
 		assert pEdge !=null;
 		if (pEdge.getStart()==pEdge.getEnd())
 		{
-			return EdgePriority.SELFCALL;
+			return EdgePriority.SELF_EDGE;
 		}
 		else if (pEdge instanceof GeneralizationEdge)
 		{
@@ -80,5 +81,9 @@ public enum EdgePriority {
 			    pPriority == EdgePriority.COMPOSITION || 
 			    pPriority == EdgePriority.ASSOCIATION;
 				
+	}
+	public static boolean isSegmented(Edge pEdge)
+	{
+		return isSegmented(priorityOf(pEdge));
 	}
 }

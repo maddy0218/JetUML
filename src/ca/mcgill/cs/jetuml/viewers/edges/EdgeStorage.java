@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import ca.mcgill.cs.jetuml.diagram.Edge;
@@ -75,10 +76,10 @@ public class EdgeStorage
 	 * @return All the edges connected to pNode
 	 * @pre pNode != null
 	 */
-	public Iterable<Edge> edgesConnectedTo(Node pNode)
+	public List<Edge> edgesConnectedTo(Node pNode)
 	{
 		assert pNode != null;
-		Collection<Edge> result = new ArrayList<>();
+		List<Edge> result = new ArrayList<>();
 		for( Edge edge : aEdgePaths.keySet() )
 		{
 			if( edge.getStart() == pNode || edge.getEnd() == pNode )
@@ -107,7 +108,6 @@ public class EdgeStorage
 		}
 		return true;
 	}
- 	
-
+	
  	
 }

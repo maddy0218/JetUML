@@ -1,17 +1,9 @@
 package ca.mcgill.cs.jetuml.viewers.edges;
-
-import java.util.Optional;
-import java.util.function.Function;
-
 import ca.mcgill.cs.jetuml.diagram.Edge;
-import ca.mcgill.cs.jetuml.diagram.edges.AggregationEdge;
-import ca.mcgill.cs.jetuml.diagram.edges.GeneralizationEdge;
-import ca.mcgill.cs.jetuml.diagram.edges.GeneralizationEdge.Type;
 import ca.mcgill.cs.jetuml.diagram.edges.SingleLabelEdge;
 import ca.mcgill.cs.jetuml.diagram.edges.ThreeLabelEdge;
 import ca.mcgill.cs.jetuml.geom.Conversions;
 import ca.mcgill.cs.jetuml.geom.Dimension;
-import ca.mcgill.cs.jetuml.geom.EdgePath;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
 import ca.mcgill.cs.jetuml.views.ArrowHead;
@@ -22,11 +14,11 @@ import ca.mcgill.cs.jetuml.views.ToolGraphics;
 import ca.mcgill.cs.jetuml.views.StringViewer.Alignment;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import static ca.mcgill.cs.jetuml.views.EdgePriority.priorityOf;
 
 /**
  *Renders the path of edges using EdgeStorage.
@@ -50,7 +42,7 @@ public class StoredEdgeViewer
 	private static LineStyle getLineStyle(Edge pEdge)
 	{
 		assert pEdge !=null;
-		if(EdgePriority.priorityOf(pEdge)==EdgePriority.IMPLEMENTATION)
+		if(priorityOf(pEdge) == EdgePriority.IMPLEMENTATION || priorityOf(pEdge) == EdgePriority.DEPENDENCY)
 		{
 			return LineStyle.DOTTED;
 		}
@@ -91,7 +83,6 @@ public class StoredEdgeViewer
 	 */
 	private static ArrowHead getArrowEnd(Edge pEdge)
 	{
-		
 		assert pEdge !=null;
 		if (EdgePriority.priorityOf(pEdge)==EdgePriority.IMPLEMENTATION ||
 			 EdgePriority.priorityOf(pEdge)==EdgePriority.INHERITANCE )
@@ -102,7 +93,8 @@ public class StoredEdgeViewer
 		{
 			return ArrowHead.V;
 		}
-		else {
+		else 
+		{
 			return ArrowHead.NONE;
 		}
 	}
@@ -155,8 +147,8 @@ public class StoredEdgeViewer
 	
 	/**
 	 * Returns whether an edge is segmented and is a step up. 
-	 * @param pEdge
-	 * @return
+	 * @param pEdge the edge of interest
+	 * @return true if edge is a step up, false otherwise.
 	 */
 	private boolean isStepUp(Edge pEdge) 
 	{
