@@ -46,7 +46,6 @@ import ca.mcgill.cs.jetuml.geom.Dimension;
 import ca.mcgill.cs.jetuml.geom.Line;
 import ca.mcgill.cs.jetuml.geom.Point;
 import ca.mcgill.cs.jetuml.geom.Rectangle;
-import ca.mcgill.cs.jetuml.viewers.DiagramViewer;
 import ca.mcgill.cs.jetuml.viewers.Grid;
 import ca.mcgill.cs.jetuml.viewers.nodes.NodeViewerRegistry;
 import javafx.scene.input.MouseEvent;
@@ -276,7 +275,7 @@ public class DiagramCanvasController
 	{
 		Point mousePoint = getMousePoint(pEvent);
 		Optional<? extends DiagramElement> element = 
-				DiagramViewer.edgeAt(aDiagramBuilder.getDiagram(), mousePoint);
+				viewerFor(aDiagramBuilder.getDiagram()).edgeAt(aDiagramBuilder.getDiagram(), mousePoint);
 		if(!element.isPresent())
 		{
 			element = viewerFor(aDiagramBuilder.getDiagram())
