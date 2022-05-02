@@ -54,7 +54,6 @@ public class TestEdgePath
 		assertTrue(samePath.equals(aEdgePath));
 		assertFalse(reversePath.equals(aEdgePath));
 		assertFalse(samePath.equals(nullEdgePath));
-		assertFalse(samePath.equals(new Point(0, 0)));
 		assertFalse(samePath.equals(new EdgePath(pointA, pointB, new Point(200, 200))));
 	}
 
@@ -65,4 +64,6 @@ public class TestEdgePath
 	 {
 		 assertTrue(aEdgePath.size() == 4);
 	 }
+
+
 }
